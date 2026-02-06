@@ -181,7 +181,7 @@
             opacity: 0.5;
         }
 
-        /* Gallery Grid - 2 columns */
+        /* Gallery Grid - 2 columns for ALL devices */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -510,6 +510,7 @@
             }
 
             .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
                 gap: 25px;
             }
 
@@ -534,7 +535,8 @@
             }
         }
 
-        /* Small phones */
+        /* تعديل: إزالة media query الخاصة بالهواتف الصغيرة التي تجعلها صورة واحدة */
+        /* Small phones - نحتفظ بـ 2 columns */
         @media (max-width: 380px) {
             .logo {
                 font-size: 1.8rem;
@@ -546,9 +548,10 @@
                 letter-spacing: 3px;
             }
 
+            /* تعديل: نبقى على 2 columns مع تقليل الفجوة */
             .gallery-grid {
-                grid-template-columns: 1fr;
-                gap: 10px;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
             }
 
             .gallery-item {
