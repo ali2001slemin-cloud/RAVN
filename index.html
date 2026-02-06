@@ -6,11 +6,11 @@
     <title>معرض الكنزات</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
+    
     <style>
         :root {
             --bg-primary: #ffffff;
@@ -19,18 +19,18 @@
             --text-secondary: #4a4a6a;
             --accent: #2d3436;
             --accent-hover: #636e72;
-            --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-            --card-hover-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            --card-hover-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             --border-color: #e9ecef;
             --card-border: #e0e0e0;
             --whatsapp: #25D366;
             --whatsapp-hover: #128C7E;
             --instagram: #E4405F;
+            --instagram-hover: #C13584;
             --tiktok: #000000;
             --tiktok-hover: #333333;
+            --success: #4CAF50;
             --error: #f44336;
-            --splash-bg: #0a0a0a;
-            --splash-text: #ffffff;
         }
 
         .dark {
@@ -40,8 +40,8 @@
             --text-secondary: #b0b0b0;
             --accent: #ffffff;
             --accent-hover: #cccccc;
-            --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-            --card-hover-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            --card-hover-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
             --border-color: #2a2a2a;
             --card-border: #3a3a3a;
         }
@@ -58,24 +58,12 @@
             -webkit-touch-callout: none;
         }
 
-        html {
-            scroll-behavior: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
         body {
             font-family: 'Tajawal', sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* Prevent scroll while splash is active */
-        body.splash-active {
-            overflow: hidden;
         }
 
         img {
@@ -87,141 +75,6 @@
             pointer-events: auto;
         }
 
-        /* ========== SPLASH SCREEN ========== */
-        .splash-screen {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            background: var(--splash-bg);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-                        transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .splash-screen.hide {
-            opacity: 0;
-            transform: scale(1.05);
-            pointer-events: none;
-        }
-
-        .splash-logo {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 40px;
-        }
-
-        .splash-letter {
-            font-size: 4rem;
-            font-weight: 800;
-            color: var(--splash-text);
-            letter-spacing: 10px;
-            opacity: 0;
-            transform: translateY(40px);
-            animation: splashLetterIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        .splash-letter:nth-child(1) { animation-delay: 0.2s; }
-        .splash-letter:nth-child(2) { animation-delay: 0.35s; }
-        .splash-letter:nth-child(3) { animation-delay: 0.5s; }
-        .splash-letter:nth-child(4) { animation-delay: 0.65s; }
-
-        @keyframes splashLetterIn {
-            0% {
-                opacity: 0;
-                transform: translateY(40px) scale(0.7);
-            }
-            60% {
-                opacity: 1;
-                transform: translateY(-5px) scale(1.05);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .splash-tagline {
-            font-size: 0.95rem;
-            color: rgba(255,255,255,0.5);
-            letter-spacing: 6px;
-            text-transform: uppercase;
-            margin-bottom: 50px;
-            opacity: 0;
-            animation: splashFade 0.8s ease 0.9s forwards;
-        }
-
-        @keyframes splashFade {
-            to { opacity: 1; }
-        }
-
-        /* Progress bar */
-        .splash-progress-wrap {
-            width: 200px;
-            height: 2px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-bottom: 20px;
-            opacity: 0;
-            animation: splashFade 0.5s ease 1.2s forwards;
-        }
-
-        .splash-progress-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.9));
-            border-radius: 2px;
-            transition: width 0.3s ease;
-        }
-
-        .splash-status {
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.35);
-            letter-spacing: 2px;
-            opacity: 0;
-            animation: splashFade 0.5s ease 1.2s forwards;
-        }
-
-        /* Decorative corner lines */
-        .splash-corner {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            opacity: 0;
-            animation: splashFade 1s ease 1s forwards;
-        }
-        .splash-corner::before,
-        .splash-corner::after {
-            content: '';
-            position: absolute;
-            background: rgba(255,255,255,0.12);
-        }
-        .splash-corner--tl { top: 30px; left: 30px; }
-        .splash-corner--tl::before { top: 0; left: 0; width: 40px; height: 1px; }
-        .splash-corner--tl::after { top: 0; left: 0; width: 1px; height: 40px; }
-        .splash-corner--tr { top: 30px; right: 30px; }
-        .splash-corner--tr::before { top: 0; right: 0; width: 40px; height: 1px; }
-        .splash-corner--tr::after { top: 0; right: 0; width: 1px; height: 40px; }
-        .splash-corner--bl { bottom: 30px; left: 30px; }
-        .splash-corner--bl::before { bottom: 0; left: 0; width: 40px; height: 1px; }
-        .splash-corner--bl::after { bottom: 0; left: 0; width: 1px; height: 40px; }
-        .splash-corner--br { bottom: 30px; right: 30px; }
-        .splash-corner--br::before { bottom: 0; right: 0; width: 40px; height: 1px; }
-        .splash-corner--br::after { bottom: 0; right: 0; width: 1px; height: 40px; }
-
-        /* ========== MAIN APP (hidden until splash done) ========== */
-        .app-wrapper {
-            opacity: 0;
-            transition: opacity 0.5s ease 0.1s;
-        }
-
-        .app-wrapper.show {
-            opacity: 1;
-        }
-
         /* Header */
         .header {
             background: var(--bg-primary);
@@ -231,7 +84,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            transform: translateZ(0);
+            backdrop-filter: blur(10px);
         }
 
         .logo {
@@ -241,6 +94,28 @@
             color: var(--text-primary);
             text-transform: uppercase;
             margin-bottom: 6px;
+        }
+
+        .logo span {
+            display: inline-block;
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .logo span:nth-child(1) { animation-delay: 0.1s; }
+        .logo span:nth-child(2) { animation-delay: 0.15s; }
+        .logo span:nth-child(3) { animation-delay: 0.2s; }
+        .logo span:nth-child(4) { animation-delay: 0.25s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .tagline {
@@ -274,7 +149,26 @@
             font-size: 0.95rem;
         }
 
-        /* Empty state */
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -287,12 +181,12 @@
             opacity: 0.5;
         }
 
-        /* Gallery Grid */
+        /* Gallery Grid - 2 columns */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
-            min-height: 200px;
+            min-height: 300px;
         }
 
         .gallery-item {
@@ -302,42 +196,43 @@
             overflow: hidden;
             box-shadow: var(--card-shadow);
             cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: cardFadeIn 0.8s ease forwards;
+            opacity: 0;
             aspect-ratio: 3/4;
             border: 2px solid var(--card-border);
-            transform: translateZ(0);
-            will-change: transform;
-            contain: layout style paint;
-            transition: transform 0.3s ease, border-color 0.3s ease;
-            opacity: 0;
-            animation: cardReveal 0.6s ease forwards;
         }
 
-        @keyframes cardReveal {
+        @keyframes cardFadeIn {
             from {
                 opacity: 0;
-                transform: translateY(24px) translateZ(0);
+                transform: translateY(30px) scale(0.95);
             }
             to {
                 opacity: 1;
-                transform: translateY(0) translateZ(0);
+                transform: translateY(0) scale(1);
             }
         }
 
         .gallery-item:hover {
-            transform: translateY(-4px) translateZ(0);
+            transform: translateY(-8px);
+            box-shadow: var(--card-hover-shadow);
             border-color: var(--accent);
         }
 
         .gallery-item:active {
-            transform: scale(0.98) translateZ(0);
+            transform: scale(0.98);
         }
 
         .gallery-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            display: block;
-            backface-visibility: hidden;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
         }
 
         .view-btn {
@@ -354,9 +249,8 @@
             align-items: center;
             justify-content: center;
             font-size: 1.1rem;
-            transition: transform 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            pointer-events: none;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
         }
 
         .gallery-item:hover .view-btn {
@@ -377,7 +271,7 @@
             justify-content: center;
             padding: 15px;
             opacity: 0;
-            transition: opacity 0.25s ease;
+            transition: opacity 0.3s ease;
         }
 
         .modal.active {
@@ -392,8 +286,8 @@
             width: 100%;
             max-height: 85vh;
             overflow: hidden;
-            transform: scale(0.85) translateY(30px);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(0.8) translateY(50px);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
         }
 
@@ -416,8 +310,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
         }
 
         .modal-close:hover {
@@ -460,8 +354,8 @@
             font-family: 'Tajawal', sans-serif;
             border-radius: 50px;
             cursor: pointer;
-            transition: background 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.3);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.35);
             width: 100%;
             max-width: 280px;
             text-decoration: none;
@@ -469,7 +363,8 @@
 
         .book-btn:hover {
             background: var(--whatsapp-hover);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(37, 211, 102, 0.45);
         }
 
         .book-btn:active {
@@ -503,7 +398,7 @@
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
             text-decoration: none;
             position: relative;
         }
@@ -524,7 +419,20 @@
         }
 
         .footer-social a:hover {
-            transform: translateY(-4px) scale(1.08);
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer-social a.instagram:hover {
+            background: linear-gradient(45deg, #FD1D1D, #E1306C, #C13584, #833AB4, #5851DB, #405DE6);
+        }
+
+        .footer-social a.whatsapp:hover {
+            background: var(--whatsapp-hover);
+        }
+
+        .footer-social a.tiktok:hover {
+            background: var(--tiktok-hover);
         }
 
         .footer-social a:active {
@@ -544,11 +452,10 @@
             white-space: nowrap;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+            transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             margin-bottom: 10px;
             border: 1px solid var(--border-color);
-            pointer-events: none;
         }
 
         .social-tooltip::after {
@@ -573,122 +480,183 @@
             margin-top: 15px;
         }
 
-        /* Responsive */
+        /* Responsive - Tablets */
         @media (min-width: 600px) {
-            .gallery-grid { gap: 20px; }
-            .gallery-item { border-radius: 16px; }
-            .modal-content { max-width: 500px; }
+            .gallery-grid {
+                gap: 20px;
+            }
+
+            .gallery-item {
+                border-radius: 16px;
+            }
+
+            .modal-content {
+                max-width: 500px;
+            }
         }
 
+        /* Responsive - Desktop */
         @media (min-width: 900px) {
-            .header { padding: 30px 20px; }
-            .logo { font-size: 2.5rem; }
-            .gallery-container { padding: 50px 20px; }
-            .gallery-grid { gap: 25px; }
-            .section-title h2 { font-size: 1.8rem; }
-            .view-btn { width: 60px; height: 60px; font-size: 1.2rem; }
-            .footer-social { gap: 25px; }
-            .footer-social a { width: 50px; height: 50px; font-size: 1.3rem; }
-            .splash-letter { font-size: 5.5rem; }
+            .header {
+                padding: 30px 20px;
+            }
+
+            .logo {
+                font-size: 2.5rem;
+            }
+
+            .gallery-container {
+                padding: 50px 20px;
+            }
+
+            .gallery-grid {
+                gap: 25px;
+            }
+
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+
+            .view-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 1.2rem;
+            }
+
+            .footer-social {
+                gap: 25px;
+            }
+
+            .footer-social a {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
         }
 
+        /* Small phones */
         @media (max-width: 380px) {
-            .logo { font-size: 1.8rem; letter-spacing: 5px; }
-            .tagline { font-size: 0.75rem; letter-spacing: 3px; }
-            .gallery-grid { grid-template-columns: 1fr; gap: 10px; }
-            .gallery-item { border-radius: 10px; }
-            .section-title h2 { font-size: 1.3rem; }
-            .section-title p { font-size: 0.85rem; }
-            .book-btn { padding: 14px 30px; font-size: 1rem; }
-            .footer-social { gap: 15px; }
-            .footer-social a { width: 40px; height: 40px; font-size: 1.1rem; }
-            .splash-letter { font-size: 3rem; }
-        }
+            .logo {
+                font-size: 1.8rem;
+                letter-spacing: 5px;
+            }
 
-        /* Touch devices */
-        @media (hover: none) and (pointer: coarse) {
-            .gallery-item { will-change: auto; transition: none; }
-            .gallery-item:hover { transform: translateZ(0); border-color: var(--card-border); }
-            .gallery-item:hover .view-btn { transform: translate(-50%, -50%) scale(0); }
-            .gallery-item:active { transform: scale(0.97) translateZ(0); transition: transform 0.15s ease; }
-            .footer-social a:hover { transform: none; }
+            .tagline {
+                font-size: 0.75rem;
+                letter-spacing: 3px;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .gallery-item {
+                border-radius: 10px;
+            }
+
+            .section-title h2 {
+                font-size: 1.3rem;
+            }
+
+            .section-title p {
+                font-size: 0.85rem;
+            }
+
+            .book-btn {
+                padding: 14px 30px;
+                font-size: 1rem;
+            }
+
+            .footer-social {
+                gap: 15px;
+            }
+
+            .footer-social a {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+            }
         }
 
         /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
-        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
     </style>
 </head>
-<body class="splash-active" oncontextmenu="return false;" oncopy="return false;" oncut="return false;">
+<body oncontextmenu="return false;" oncopy="return false;" oncut="return false;">
+    <!-- Header -->
+    <header class="header">
+        <h1 class="logo">
+            <span>N</span><span>V</span><span>A</span><span>R</span>
+        </h1>
+        <p class="tagline">براند طباعة DTF</p>
+    </header>
 
-    <!-- ========== SPLASH SCREEN ========== -->
-    <div class="splash-screen" id="splashScreen">
-        <div class="splash-corner splash-corner--tl"></div>
-        <div class="splash-corner splash-corner--tr"></div>
-        <div class="splash-corner splash-corner--bl"></div>
-        <div class="splash-corner splash-corner--br"></div>
-
-        <div class="splash-logo">
-            <span class="splash-letter">N</span>
-            <span class="splash-letter">V</span>
-            <span class="splash-letter">A</span>
-            <span class="splash-letter">R</span>
+    <!-- Gallery -->
+    <main class="gallery-container">
+        <div class="section-title">
+            <h2>مجموعة ضخمة من التصاميم لن تراها في مكان أخر</h2>
+            <p>لدينا خدمة الطباعة حسب الطلب</p>
         </div>
-        <p class="splash-tagline">براند طباعة DTF</p>
 
-        <div class="splash-progress-wrap">
-            <div class="splash-progress-bar" id="splashProgress"></div>
+        <div class="gallery-grid" id="galleryGrid">
+            <!-- Items will be loaded from Firebase -->
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>جاري تحميل الصور...</p>
+            </div>
         </div>
-        <p class="splash-status" id="splashStatus">جاري التحميل...</p>
-    </div>
 
-    <!-- ========== MAIN APP ========== -->
-    <div class="app-wrapper" id="appWrapper">
-        <!-- Header -->
-        <header class="header">
-            <h1 class="logo">RAVN</h1>
-            <p class="tagline">براند طباعة DTF</p>
-        </header>
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <i class="fas fa-images"></i>
+            <h3>لا توجد صور في المعرض</h3>
+            <p>يمكن للمسؤول إضافة صور جديدة</p>
+        </div>
+    </main>
 
-        <!-- Gallery -->
-        <main class="gallery-container">
-            <div class="section-title">
-                <h2>مجموعة ضخمة من التصاميم لن تراها في مكان أخر</h2>
-                <p>لدينا خدمة الطباعة حسب الطلب</p>
-            </div>
-
-            <div class="gallery-grid" id="galleryGrid"></div>
-
-            <div class="empty-state" id="emptyState" style="display: none;">
-                <i class="fas fa-images"></i>
-                <h3>لا توجد صور في المعرض</h3>
-                <p>يمكن للمسؤول إضافة صور جديدة</p>
-            </div>
-        </main>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-social">
-                <a href="https://www.instagram.com/ravn.0.1?igsh=bWVmMXliYnJjZGkx"
-                   target="_blank" class="instagram" aria-label="Instagram">
-                    <i class="fab fa-instagram"></i>
-                    <span class="social-tooltip">تابعنا على Instagram</span>
-                </a>
-                <a href="https://wa.me/905433777659"
-                   target="_blank" class="whatsapp" aria-label="WhatsApp">
-                    <i class="fab fa-whatsapp"></i>
-                    <span class="social-tooltip">تواصل معنا على WhatsApp</span>
-                </a>
-                <a href="https://www.tiktok.com/@ravn.01?_r=1&_t=ZS-93fkWDTlilz"
-                   target="_blank" class="tiktok" aria-label="TikTok">
-                    <i class="fab fa-tiktok"></i>
-                    <span class="social-tooltip">تابعنا على TikTok</span>
-                </a>
-            </div>
-            <p>&copy; 2026 RAVN - جميع الحقوق محفوظة</p>
-        </footer>
-    </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-social">
+            <!-- Instagram -->
+            <a href="https://www.instagram.com/ravn.0.1?igsh=bWVmMXliYnJjZGkx" 
+               target="_blank" 
+               class="instagram"
+               aria-label="Instagram">
+                <i class="fab fa-instagram"></i>
+                <span class="social-tooltip">تابعنا على Instagram</span>
+            </a>
+            
+            <!-- WhatsApp -->
+            <a href="https://wa.me/905433777659" 
+               target="_blank" 
+               class="whatsapp"
+               aria-label="WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+                <span class="social-tooltip">تواصل معنا على WhatsApp</span>
+            </a>
+            
+            <!-- TikTok -->
+            <a href="https://www.tiktok.com/@ravn.01?_r=1&_t=ZS-93fkWDTlilz" 
+               target="_blank" 
+               class="tiktok"
+               aria-label="TikTok">
+                <i class="fab fa-tiktok"></i>
+                <span class="social-tooltip">تابعنا على TikTok</span>
+            </a>
+        </div>
+        <p>© 2026 RAVN - جميع الحقوق محفوظة</p>
+    </footer>
 
     <!-- Product Modal -->
     <div class="modal" id="productModal">
@@ -700,8 +668,7 @@
                 <img src="" alt="منتج" class="modal-image" id="modalImage">
             </div>
             <div class="modal-info">
-                <a href="https://wa.me/905433777659?text=مرحباً، أريد الاستفسار عن هذا المنتج"
-                   target="_blank" class="book-btn" onclick="closeModal()">
+                <a href="https://wa.me/905433777659?text=مرحباً، أريد الاستفسار عن هذا المنتج" target="_blank" class="book-btn" onclick="closeModal()">
                     <i class="fab fa-whatsapp"></i>
                     احجز الآن
                 </a>
@@ -710,7 +677,7 @@
     </div>
 
     <script>
-        // ===== Firebase =====
+        // Firebase configuration from your JSON file
         const firebaseConfig = {
             apiKey: "AIzaSyDe6gkFNS9zIp6x4gEfCtN-I9au-M3tCg8",
             authDomain: "uim-yu-mobeze.firebaseapp.com",
@@ -719,251 +686,180 @@
             messagingSenderId: "653379189762",
             appId: "1:653379189762:android:d4986c02b32b5c883bfb1b"
         };
+
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // ===== Dark mode =====
+        // Dark mode detection
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.documentElement.classList.add('dark');
         }
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-            document.documentElement.classList.toggle('dark', event.matches);
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
         });
 
-        // ===== Copy protection =====
+        // Prevent keyboard shortcuts for copying
         document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && ['c','C','a','A','u','U','s','S'].includes(e.key)) {
+            if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'a' || e.key === 'A' || e.key === 'u' || e.key === 'U' || e.key === 's' || e.key === 'S')) {
                 e.preventDefault();
                 return false;
             }
         });
 
-        // ===== State =====
+        // Social media links tracking (optional)
+        function trackSocialClick(platform) {
+            console.log(`Clicked on ${platform}`);
+            // يمكنك إضافة Google Analytics هنا
+            // gtag('event', 'social_click', {
+            //     'event_category': 'Social',
+            //     'event_label': platform
+            // });
+        }
+
+        // Setup social media links tracking
+        document.addEventListener('DOMContentLoaded', function() {
+            const socialLinks = document.querySelectorAll('.footer-social a');
+            socialLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    const platform = this.classList.contains('instagram') ? 'Instagram' :
+                                   this.classList.contains('whatsapp') ? 'WhatsApp' : 'TikTok';
+                    trackSocialClick(platform);
+                });
+            });
+        });
+
         let currentProduct = null;
         let galleryItems = [];
 
-        // ===== Splash Screen Logic =====
-        const splashProgress = document.getElementById('splashProgress');
-        const splashStatus = document.getElementById('splashStatus');
-        const splashScreen = document.getElementById('splashScreen');
-        const appWrapper = document.getElementById('appWrapper');
-        const MINIMUM_SPLASH_MS = 5000;
-        let splashStartTime = Date.now();
-        let dataReady = false;
-        let imagesReady = false;
-        let splashDismissed = false;
-
-        function updateProgress(pct, text) {
-            splashProgress.style.width = pct + '%';
-            if (text) splashStatus.textContent = text;
-        }
-
-        // Preload a single image, returns a promise
-        function preloadImage(url) {
-            return new Promise(function(resolve) {
-                var img = new Image();
-                img.onload = function() { resolve(true); };
-                img.onerror = function() { resolve(false); };
-                img.src = url;
-            });
-        }
-
-        // Preload all images with progress tracking
-        async function preloadAllImages(urls) {
-            if (urls.length === 0) {
-                updateProgress(90, 'جاهز...');
-                return;
-            }
-
-            let loaded = 0;
-            var total = urls.length;
-
-            var promises = urls.map(function(url) {
-                return preloadImage(url).then(function() {
-                    loaded++;
-                    // Progress from 30% to 90% for image loading
-                    var pct = 30 + Math.round((loaded / total) * 60);
-                    updateProgress(pct, 'تحميل الصور ' + loaded + ' / ' + total);
-                });
-            });
-
-            await Promise.all(promises);
-        }
-
-        // Dismiss splash when both conditions are met
-        function tryDismissSplash() {
-            if (splashDismissed) return;
-            if (!dataReady || !imagesReady) return;
-
-            var elapsed = Date.now() - splashStartTime;
-            var remaining = Math.max(0, MINIMUM_SPLASH_MS - elapsed);
-
-            // Smoothly fill progress to 100% during remaining wait
-            updateProgress(95, 'جاري التجهيز...');
-
-            setTimeout(function() {
-                updateProgress(100, 'مرحباً بك!');
-
-                // Small pause at 100% for visual satisfaction
-                setTimeout(function() {
-                    splashDismissed = true;
-                    splashScreen.classList.add('hide');
-                    document.body.classList.remove('splash-active');
-                    appWrapper.classList.add('show');
-
-                    // Render gallery after splash fades
-                    renderGallery();
-
-                    // Remove splash from DOM after animation
-                    setTimeout(function() {
-                        if (splashScreen.parentNode) {
-                            splashScreen.parentNode.removeChild(splashScreen);
-                        }
-                    }, 700);
-                }, 300);
-            }, remaining);
-        }
-
-        // ===== Load Data from Firebase =====
-        async function loadGalleryData() {
-            updateProgress(10, 'جاري الاتصال بالسيرفر...');
-
+        // Load gallery items from Firebase
+        async function loadGallery() {
+            const grid = document.getElementById('galleryGrid');
+            const loading = document.getElementById('loading');
+            const emptyState = document.getElementById('emptyState');
+            
             try {
-                var snapshot = await db.collection('gallery').orderBy('createdAt', 'desc').get();
-
-                updateProgress(25, 'تم جلب البيانات...');
-
-                galleryItems = [];
-                snapshot.forEach(function(doc) {
-                    galleryItems.push(Object.assign({ id: doc.id }, doc.data()));
-                });
-
-                dataReady = true;
-
-                if (galleryItems.length === 0) {
-                    imagesReady = true;
-                    updateProgress(90, 'المعرض فارغ');
-                    tryDismissSplash();
+                const snapshot = await db.collection('gallery').orderBy('createdAt', 'desc').get();
+                
+                if (snapshot.empty) {
+                    loading.style.display = 'none';
+                    emptyState.style.display = 'block';
                     return;
                 }
 
-                // Start preloading all images
-                updateProgress(30, 'تحميل الصور...');
-                var urls = galleryItems.map(function(item) { return item.imageUrl; }).filter(Boolean);
+                galleryItems = [];
+                snapshot.forEach(doc => {
+                    galleryItems.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
 
-                await preloadAllImages(urls);
-                imagesReady = true;
-                tryDismissSplash();
+                renderGallery();
+                loading.style.display = 'none';
+                
+                if (galleryItems.length === 0) {
+                    emptyState.style.display = 'block';
+                } else {
+                    emptyState.style.display = 'none';
+                }
 
             } catch (error) {
-                console.error('Error loading gallery:', JSON.stringify(error));
-                updateProgress(100, 'حدث خطأ - جاري المتابعة');
-                dataReady = true;
-                imagesReady = true;
-
-                // Still dismiss after minimum time
-                setTimeout(function() {
-                    tryDismissSplash();
-                }, 1500);
+                console.error('Error loading gallery:', error);
+                loading.innerHTML = '<p style="color: var(--error)">حدث خطأ في تحميل الصور</p>';
             }
         }
 
-        // ===== Render Gallery (called after splash) =====
+        // Render gallery
         function renderGallery() {
-            var grid = document.getElementById('galleryGrid');
-            var emptyState = document.getElementById('emptyState');
-
-            if (galleryItems.length === 0) {
-                emptyState.style.display = 'block';
-                return;
-            }
-
-            emptyState.style.display = 'none';
-            var fragment = document.createDocumentFragment();
-
-            galleryItems.forEach(function(item, index) {
-                var itemDiv = document.createElement('div');
+            const grid = document.getElementById('galleryGrid');
+            grid.innerHTML = '';
+            
+            galleryItems.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
                 itemDiv.className = 'gallery-item';
-                // Stagger animation delay for a wave effect
-                itemDiv.style.animationDelay = (index * 0.06) + 's';
-                itemDiv.onclick = function() { openModal(item.id); };
-
-                var img = document.createElement('img');
-                img.src = item.imageUrl;
-                img.alt = 'تصميم رافن';
-                img.draggable = false;
-                // Images are already preloaded, so they render instantly
-                img.decoding = 'async';
-                img.onerror = function() {
-                    this.onerror = null;
-                    this.src = 'data:image/svg+xml,' + encodeURIComponent(
-                        '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" fill="%231a1a2e">' +
-                        '<rect width="300" height="400"/>' +
-                        '<text x="150" y="200" fill="white" text-anchor="middle" font-size="20">RAVN</text></svg>'
-                    );
-                };
-
-                var viewBtn = document.createElement('div');
-                viewBtn.className = 'view-btn';
-                viewBtn.innerHTML = '<i class="fas fa-eye"></i>';
-
-                itemDiv.appendChild(img);
-                itemDiv.appendChild(viewBtn);
-                fragment.appendChild(itemDiv);
+                itemDiv.style.animationDelay = `${index * 0.08}s`;
+                itemDiv.onclick = () => openModal(item.id);
+                
+                itemDiv.innerHTML = `
+                    <img src="${item.imageUrl}" alt="تصميم رافن" draggable="false" loading="lazy"
+                         onerror="this.onerror=null; this.src='https://via.placeholder.com/300x400/1a1a2e/ffffff?text=RAVN+Design'">
+                    <div class="view-btn">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                `;
+                
+                grid.appendChild(itemDiv);
             });
 
-            grid.innerHTML = '';
-            grid.appendChild(fragment);
+            // Add animation to new items
+            const items = document.querySelectorAll('.gallery-item');
+            items.forEach(item => {
+                item.style.animation = 'cardFadeIn 0.8s ease forwards';
+            });
         }
 
-        // ===== Modal =====
+        // Open modal
         function openModal(productId) {
-            currentProduct = galleryItems.find(function(p) { return p.id === productId; });
+            currentProduct = galleryItems.find(p => p.id === productId);
             if (!currentProduct) return;
 
             document.getElementById('modalImage').src = currentProduct.imageUrl;
-            var modal = document.getElementById('productModal');
+
+            const modal = document.getElementById('productModal');
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
 
+        // Close modal
         function closeModal() {
-            var modal = document.getElementById('productModal');
+            const modal = document.getElementById('productModal');
             modal.classList.remove('active');
             document.body.style.overflow = '';
         }
 
+        // Close modals on backdrop click
         document.getElementById('productModal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
+            if (e.target === this) {
+                closeModal();
+            }
         });
 
+        // Close on escape key
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Escape') {
+                closeModal();
+            }
         });
 
-        // ===== Initialize =====
-        loadGalleryData();
-
-        // Real-time updates (debounced, only after splash)
-        var realtimeTimeout = null;
+        // Initialize
+        loadGallery();
+        
+        // Real-time updates
         db.collection('gallery')
             .orderBy('createdAt', 'desc')
-            .onSnapshot(function() {
-                if (!splashDismissed) return; // ignore during splash
-                if (realtimeTimeout) clearTimeout(realtimeTimeout);
-                realtimeTimeout = setTimeout(function() {
-                    db.collection('gallery').orderBy('createdAt', 'desc').get().then(function(snapshot) {
-                        galleryItems = [];
-                        snapshot.forEach(function(doc) {
-                            galleryItems.push(Object.assign({ id: doc.id }, doc.data()));
-                        });
-                        renderGallery();
-                    });
-                }, 2000);
-            }, function(error) {
-                console.error("Real-time update error:", JSON.stringify(error));
+            .onSnapshot((snapshot) => {
+                loadGallery();
+            }, (error) => {
+                console.error("Real-time update error:", error);
             });
+
+        // Enhance social media links
+        document.querySelectorAll('.footer-social a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                // إضافة مؤشر تحميل
+                const originalHTML = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                
+                setTimeout(() => {
+                    this.innerHTML = originalHTML;
+                }, 1000);
+            });
+        });
     </script>
 </body>
 </html>
-
